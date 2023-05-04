@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ReCAPTCHA from 'react-google-recaptcha'
 
-const RECAPTCHA_SITE_KEY = '6Lel098lAAAAAEUt4YCFeSgThDq3qYx-FMtdWiOh' // reCAPTCHA site key buraya yazılmalıdır.
+const RECAPTCHA_SITE_KEY =
+  'https://www.google.com/recaptcha/enterprise.js?render=6Lel098lAAAAAEUt4YCFeSgThDq3qYx-FMtdWiOh' // reCAPTCHA site key buraya yazılmalıdır.
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState('')
