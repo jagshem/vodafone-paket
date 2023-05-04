@@ -12,18 +12,28 @@ const Index = () => {
     setPhoneNumber(e.target.value)
   }
 
+  const handleReset = () => {
+    setStep(1)
+  }
+
   return (
-    <div className="container mx-auto mt-10">
-      <h1 className="text-3xl font-bold mb-5 text-center text-red-700">
+    <div className="container mx-auto mt-10 max-w-screen-md">
+      <h1 className="text-3xl font-bold mb-8 text-center text-[#333]">
         Kolay Paket Yükle
       </h1>
-      <div className="flex justify-center mb-8"></div>
+      <div className="flex justify-center mb-8">
+        <span className="mr-4 border-b-2 border-red-600 pb-1 font-bold">
+          Misafir olarak yükle
+        </span>
+        <span>Giriş yaparak yükle</span>
+      </div>
       <div className="flex justify-center">
-        <div className="bg-white shadow-md p-4 md:p-8 w-full md:w-3/4 mx-auto">
+        <div className="bg-white shadow-md p-4 md:p-8 w-full mx-auto">
           {step === 1 && (
             <div>
               <h4 className="font-bold mb-2">
-                1. Kolay paket yüklemek istediğiniz telefon numarasını giriniz
+                <span className="text-2xl mr-5">1.</span>Kolay paket yüklemek
+                istediğiniz telefon numarasını giriniz
               </h4>
               <hr className="mb-2" />
               <input
@@ -43,31 +53,49 @@ const Index = () => {
           )}
           {step > 1 && (
             <div>
-              <h1 className="mb-4 font-bold text-center">
-                Girdiğiniz Telefon Numarası
+              <h1 className="mb-4 font-bold">
+                <span className="text-2xl mr-5">1.</span>Telefon numarası{' '}
               </h1>
-              <p className="font-light text-center">{phoneNumber}</p>
+              <div className="flex items-center">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/65/65680.png?w=740&t=st=1683210386~exp=1683210986~hmac=8de099d5a6361468cdd6e4b675375d5a78910d11675f5111f662b4399351e34e"
+                  alt="Phone"
+                  className="mr-2 w-[55px] h-[55px]"
+                />
+                <p className="font-bold text-[17px] mr-4">{phoneNumber}</p>
+                <span
+                  className="text-red-600 cursor-pointer underline"
+                  onClick={handleReset}
+                >
+                  Değiştir
+                </span>
+              </div>
             </div>
           )}
-
-          <div className="container mx-auto mt-10">
-            <h4 className="font-bold mb-2">2. Kolay paket seçim</h4>
-            {step === 1 && (
-              <p>
-                Telefon numarası girdiğiniz zaman size uygun paketleri
-                göstereceğiz...
-              </p>
-            )}
-
+        </div>
+      </div>
+      <div className="flex justify-center mt-8">
+        <div className="bg-white shadow-md p-4 md:p-8 w-full mx-auto">
+          <div>
+            <h4 className="font-bold mb-2">
+              <span className="text-2xl mr-5"> 2.</span> Kolay paket seçim
+            </h4>
+            <p className="font-medium underline text-red-600 text-center text-[15px] mt-6 mb-6">
+              Telefon numaranızı girdiğiniz zaman faturanıza uygun paketleri
+              göstericez.{' '}
+            </p>
             {step === 2 && <div>merhaba</div>}
           </div>
-
-          {step === 3 && (
-            <div>
-              <h4 className="font-bold mb-2">3. Ödeme</h4>
-              {/* 3. adım kutusu içeriği buraya gelecek */}
-            </div>
-          )}
+        </div>
+      </div>
+      <div className="flex justify-center mt-8">
+        <div className="bg-white shadow-md p-4 md:p-8 w-full mx-auto">
+          <div>
+            <h4 className="font-bold mb-2">
+              <span className="font-bold text-2xl mr-5">3.</span> Ödeme
+            </h4>
+            {step === 3 && <div>merhaba 3</div>}
+          </div>
         </div>
       </div>
     </div>
