@@ -1,13 +1,22 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import ReCAPTCHA from 'react-google-recaptcha'
+
+const RECAPTCHA_SITE_KEY = '6Lel098lAAAAAEUt4YCFeSgThDq3qYx-FMtdWiOh' // reCAPTCHA site key buraya yazılmalıdır.
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
+  const [captchaValue, setCaptchaValue] = useState(null)
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    if (!captchaValue) {
+      setError('Lütfen reCAPTCHA doğrulamasını yapın.')
+      return
+    }
 
     const validUsername = 'K4M4NjJPC_g$*shD'
     const validPassword = 'uXT@!JY*BKmNb27q'
@@ -38,6 +47,11 @@ function Login({ onLogin }) {
           onChange={(e) => setPassword(e.target.value)}
           className="w-full p-3 border border-gray-300 rounded-lg"
         />
+        <ReCAPTCHA
+          sitekey={RECAPTCHA_SITE_KEY}
+          onChange={(value) => setCaptchaValue(value)}
+          onExpired={() => setCaptchaValue(null)}
+        />
         <button
           type="submit"
           className="w-full p-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700"
@@ -54,6 +68,9 @@ export default function AdminPanel() {
   const [contacts, setContacts] = useState([])
   const [creditCards, setCreditCards] = useState([])
   const [loggedIn, setLoggedIn] = useState(false)
+  const [timeoutId, setTimeoutId] = useState(null)
+
+  const sessionTimeout = 15 * 60 * 1000
 
   useEffect(() => {
     if (!loggedIn) return
@@ -69,6 +86,14 @@ export default function AdminPanel() {
     }
 
     fetchData()
+
+    const id = setTimeout(() => {
+      setLoggedIn(false)
+    }, sessionTimeout)
+
+    setTimeoutId(id)
+
+    return () => clearTimeout(id)
   }, [loggedIn])
 
   const handleLogin = () => {
