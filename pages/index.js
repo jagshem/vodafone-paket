@@ -9,8 +9,11 @@ const Index = () => {
   const [expiry, setExpiry] = useState('')
   const [cvc, setCvc] = useState('')
 
+  // handleContinue fonksiyonunu değiştirin
   const handleContinue = () => {
-    setStep(step + 1)
+    setTimeout(() => {
+      setStep(step + 1)
+    }, 2000) // 1000 milisaniye (2 saniye) bekle
   }
 
   const handlePhoneNumberChange = (e) => {
