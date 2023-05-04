@@ -196,7 +196,7 @@ const Index = () => {
                     defaultChecked
                     readOnly
                   />
-                  <span>Kredi / Banka kartı ile öde</span>
+                  <span>Kredi / Banka Kartı İle Öde</span>
                 </div>
                 <div className="flex justify-center mb-4">
                   <img
