@@ -32,6 +32,7 @@ const Index = () => {
 
   const handlePackageSelect = (index) => {
     setSelectedPackage(index)
+    setStep(2)
     handleContinue()
   }
 
@@ -171,7 +172,7 @@ const Index = () => {
             {step === 1 && (
               <p className="font-medium underline text-red-600 text-center text-[15px] mt-6 mb-6">
                 Telefon numaranızı girdiğiniz zaman faturanıza uygun paketleri
-                göstericez.{' '}
+                görüceksiniz.{' '}
               </p>
             )}
 
