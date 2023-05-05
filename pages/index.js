@@ -127,7 +127,7 @@ const Index = () => {
                 placeholder="Telefon Numarası"
                 value={phoneNumber}
                 onChange={handlePhoneNumberChange}
-                maxLength={12}
+                maxLength={10}
               />
               <button
                 className="bg-red-600 text-white font-semibold px-4 py-2 rounded hover:bg-red-700 mt-2"
