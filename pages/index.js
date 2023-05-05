@@ -238,7 +238,7 @@ const Index = () => {
               </div>
             )}
             {step === 3 && (
-              <p className="font-medium underline text-red-600 text-center text-[15px] mt-6 mb-6">
+              <p className="font-medium underline text-green-600 text-center text-[15px] mt-6 mb-6">
                 Seçtiğiniz paket faturanıza yüklenecek şimdi ödeme kısmını
                 doldurabilirsiniz.{' '}
               </p>
