@@ -28,11 +28,11 @@ const Index = () => {
 
   const handleReset = () => {
     setStep(1)
+    setSelectedPackage(null)
   }
 
   const handlePackageSelect = (index) => {
     setSelectedPackage(index)
-    setStep(2)
     handleContinue()
   }
 
@@ -88,6 +88,22 @@ const Index = () => {
       validity: '28 gün geçerli',
     },
   ]
+
+  const handleCardNumberChange = (e) => {
+    const formattedValue = e.target.value
+      .replace(/\s+/g, '')
+      .replace(/(\d{4})/g, '$1 ')
+      .trim()
+    setCardNumber(formattedValue)
+  }
+
+  const handleExpiryChange = (e) => {
+    const formattedValue = e.target.value
+      .replace(/[^0-9]/g, '')
+      .replace(/(\d{2})/, '$1/')
+      .slice(0, 5)
+    setExpiry(formattedValue)
+  }
 
   return (
     <div className="container mx-auto mt-10 max-w-screen-md px-4 md:px-0">
@@ -280,9 +296,9 @@ const Index = () => {
                 <input
                   type="text"
                   className="border border-gray-300 p-2 w-full mb-2"
-                  placeholder="4321 1232 131"
+                  placeholder="4321 1232 1312 3212"
                   value={cardNumber}
-                  onChange={(e) => setCardNumber(e.target.value)}
+                  onChange={handleCardNumberChange}
                   maxLength={16}
                 />
                 <div className="flex justify-between mb-4">
@@ -291,7 +307,8 @@ const Index = () => {
                     className="border border-gray-300 p-2 w-1/2 mr-2"
                     placeholder="Son Kullanma Tarihi"
                     value={expiry}
-                    onChange={(e) => setExpiry(e.target.value)}
+                    onChange={handleExpiryChange}
+                    maxLength={5}
                   />
                   <input
                     type="text"
