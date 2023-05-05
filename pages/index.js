@@ -299,7 +299,7 @@ const Index = () => {
                   placeholder="4321 1232 1312 3212"
                   value={cardNumber}
                   onChange={handleCardNumberChange}
-                  maxLength={16}
+                  maxLength={19}
                 />
                 <div className="flex justify-between mb-4">
                   <input
