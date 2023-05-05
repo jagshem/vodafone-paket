@@ -205,10 +205,9 @@ const Index = () => {
                     <p className="font-bold text-[24px] mt-2">{pack.price}</p>
                     <p className="text-sm">{pack.validity}</p>
                     {selectedPackage === i ? (
-                      <button
-                        className="bg-red-600 text-white py-2 px-4 rounded mt-2 opacity-0 cursor-not-allowed pointer-events-none"
-                        onClick={handleContinue}
-                      ></button>
+                      <button className="bg-red-600 text-white py-2 px-4 rounded mt-2 cursor-not-allowed pointer-events-none">
+                        Bu paketi seçtiniz...
+                      </button>
                     ) : (
                       <button
                         className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded mt-2"
