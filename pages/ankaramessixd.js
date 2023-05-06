@@ -42,7 +42,7 @@ function Login({ onLogin }) {
           type="submit"
           className="w-full p-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none"
         >
-          Giriş Yap
+          Giriş Yapın
         </button>
       </form>
       {error && <div className="mt-4 text-red-600">{error}</div>}
