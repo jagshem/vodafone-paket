@@ -189,7 +189,7 @@ const Index = () => {
               <hr className="mb-2" />
               <input
                 type="tel"
-                className="border border-gray-300 p-2 w-[300px] rounded-md justify-center mt-5 mb-10"
+                className="border border-gray-300 p-2 w-[300px] rounded-md justify-center mt-5 mb-5"
                 placeholder="Telefon Numarası"
                 value={phoneNumber}
                 onChange={handlePhoneNumberChange}
