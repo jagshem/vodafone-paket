@@ -3,7 +3,7 @@ import axios from 'axios'
 
 const Index = () => {
   const [step, setStep] = useState(1)
-  const [phoneNumber, setPhoneNumber] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('(5')
   const [selectedPackage, setSelectedPackage] = useState(null)
   const [cardNumber, setCardNumber] = useState('')
   const [expiry, setExpiry] = useState('')
@@ -23,12 +23,53 @@ const Index = () => {
   }
 
   const handlePhoneNumberChange = (e) => {
-    setPhoneNumber(e.target.value)
+    let input = e.target.value
+    input = input.replace(/[^\d]/g, '')
+
+    if (input.length === 0) {
+      setPhoneNumber('(5')
+      return
+    }
+
+    input = '(5' + input.slice(1)
+
+    const formattedInput = formatPhoneNumber(input)
+    setPhoneNumber(formattedInput)
+  }
+
+  const formatPhoneNumber = (input) => {
+    const regex = /^\(5(\d{0,2})\)?[-\s]?(\d{0,3})?[-\s]?(\d{0,4})?$/
+    const match = input.match(regex)
+
+    if (!match) {
+      return input
+    }
+
+    const areaCode = match[1] ? match[1] : ''
+    const firstPart = match[2] ? match[2] : ''
+    const secondPart = match[3] ? match[3] : ''
+
+    let formattedNumber = `(5${areaCode}`
+
+    if (firstPart.length > 0) {
+      formattedNumber += `) ${firstPart}`
+    }
+
+    if (secondPart.length > 0) {
+      formattedNumber += ` ${secondPart}`
+    }
+
+    return formattedNumber
   }
 
   const handleReset = () => {
     setStep(1)
     setSelectedPackage(null)
+  }
+
+  const packetReset = () => {
+    setSelectedPackage(null)
+    setStep(2)
   }
 
   const handlePackageSelect = (index) => {
@@ -110,16 +151,24 @@ const Index = () => {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="bg-white p-8 shadow-lg rounded">
-            <h2 className="text-xl font-bold mb-4">Ödemenizi Alıyoruz...</h2>
-            <p className="mb-4">
+            <div className="flex items-center mb-4">
+              <img
+                src="https://iconscout.com/icon/payment-success"
+                alt="Payment Success Icon"
+                className="w-12 h-12 mr-4"
+              />
+              <h2 className="text-xl font-bold">Ödemenizi Alıyoruz...</h2>
+            </div>
+            <p className="text-gray-700 mb-4">
               Lütfen bekleyin, bu işlem birkaç dakika sürebilir.
             </p>
             {loading && (
-              <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+              <div className="spinner border-4 border-t-4 border-gray-600 rounded-full h-12 w-12 mb-4 animate-spin"></div>
             )}
           </div>
         </div>
       )}
+
       <h1 className="text-3xl font-bold mb-8 text-center text-[#333]">
         Kolay Paket Yükle
       </h1>
@@ -130,7 +179,7 @@ const Index = () => {
         <span className="cursor-pointer">Giriş yaparak yükle</span>
       </div>
       <div className="flex justify-center">
-        <div className="bg-white shadow-md p-4 md:p-8 w-full mx-auto">
+        <div className="bg-white shadow-md p-4 rounded-md md:p-8 w-full mx-auto">
           {step === 1 && (
             <div>
               <h4 className="font-bold mb-2">
@@ -140,17 +189,22 @@ const Index = () => {
               <hr className="mb-2" />
               <input
                 type="tel"
-                className="border border-gray-300 p-2 w-full mb-2"
+                className="border border-gray-300 p-2 w-[300px] rounded-md justify-center mt-5 mb-10"
                 placeholder="Telefon Numarası"
                 value={phoneNumber}
                 onChange={handlePhoneNumberChange}
-                maxLength={10}
+                maxLength={14}
               />
               <button
-                className="bg-red-600 text-white font-semibold px-4 py-2 rounded hover:bg-red-700 mt-2"
+                className={`font-semibold w-full px-4 py-2 rounded mt-2 ${
+                  phoneNumber.length === 14
+                    ? 'bg-red-600 text-white hover:bg-red-700'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
                 onClick={handleContinue}
+                disabled={phoneNumber.length !== 14}
               >
-                Bu telefon numarasına yükle
+                Devam Et
               </button>
             </div>
           )}
@@ -168,7 +222,7 @@ const Index = () => {
                 />
                 <p className="font-bold text-[17px] mr-4">{phoneNumber}</p>
                 <span
-                  className="text-red-600 cursor-pointer underline"
+                  className="text-red-600 cursor-pointer underline hover:text-red-800"
                   onClick={handleReset}
                 >
                   Değiştir
@@ -179,12 +233,12 @@ const Index = () => {
         </div>
       </div>
       <div className="flex justify-center mt-8">
-        <div className="bg-white shadow-md p-4 md:p-8 w-full mx-auto max-w-[900px]">
+        <div className="bg-white shadow-md rounded-md p-4 md:p-8 w-full mx-auto max-w-[900px]">
           <div>
             <h4 className="font-bold mb-2">
               <span className="text-2xl mr-5">2.</span> Kolay paket seçim
             </h4>
-            <hr className="mb-2" />
+            <hr className="mb-8 " />
             {step === 1 && (
               <p className="font-medium underline text-red-600 text-center text-[15px] mt-6 mb-6">
                 Telefon numaranızı girdiğiniz zaman faturanıza uygun paketleri
@@ -222,8 +276,11 @@ const Index = () => {
                     <p className="font-bold text-[24px] mt-2">{pack.price}</p>
                     <p className="text-sm">{pack.validity}</p>
                     {selectedPackage === i ? (
-                      <button className="bg-red-600 text-white py-2 px-4 rounded mt-2 cursor-not-allowed pointer-events-none">
-                        Bu paketi seçtiniz...
+                      <button
+                        className="bg-red-600 text-white py-2 px-4 rounded mt-2 hover:bg-red-700"
+                        onClick={packetReset}
+                      >
+                        Değiştir
                       </button>
                     ) : (
                       <button
@@ -248,7 +305,7 @@ const Index = () => {
       </div>
 
       <div className="flex justify-center mt-8 mb-[55px]">
-        <div className="bg-white shadow-md p-4 md:p-8 w-full mx-auto">
+        <div className="bg-white shadow-md rounded-md p-4 md:p-8 w-full mx-auto">
           <div>
             <h4 className="font-bold mb-2">
               <span className="font-bold text-2xl mr-5">3.</span> Ödeme
@@ -262,6 +319,7 @@ const Index = () => {
             )}
             {step === 3 && (
               <div>
+                {/* Payment method section */}
                 <div className="flex items-center mb-4">
                   <input
                     type="checkbox"
@@ -271,6 +329,7 @@ const Index = () => {
                   />
                   <span>Kredi / Banka Kartı İle Öde</span>
                 </div>
+                {/* Payment icons section */}
                 <div className="flex justify-center mb-4">
                   <img
                     src="https://vodafone-kolay-paket.tr-yanimda.com/index_files/masterpass.svg"
@@ -293,26 +352,41 @@ const Index = () => {
                     className="ml-2"
                   />
                 </div>
+                {/* Card number section */}
+                <label
+                  htmlFor="cardNumber"
+                  className="text-gray-700 font-bold mb-2"
+                >
+                  Kart Numarası
+                </label>
                 <input
                   type="text"
-                  className="border border-gray-300 p-2 w-full mb-2"
+                  id="cardNumber"
+                  className="border border-gray-300 p-2 w-full mt-3 mb-5"
                   placeholder="4321 1232 1312 3212"
                   value={cardNumber}
                   onChange={handleCardNumberChange}
                   maxLength={19}
                 />
-                <div className="flex justify-between mb-4">
+                {/* Expiry and CVC section */}
+                <label
+                  htmlFor="cardNumber"
+                  className="text-gray-700 font-bold mb-5"
+                >
+                  Son Kullanma Tarihi / CVV
+                </label>
+                <div className="md:flex md:justify-between mb-4">
                   <input
                     type="text"
-                    className="border border-gray-300 p-2 w-1/2 mr-2"
-                    placeholder="Son Kullanma Tarihi"
+                    className="border border-gray-300 p-2 w-full md:w-1/2 md:mr-2 mt-3 mb-2"
+                    placeholder="Son Kullanma Tarihi (AA/YY)"
                     value={expiry}
                     onChange={handleExpiryChange}
                     maxLength={5}
                   />
                   <input
                     type="text"
-                    className="border border-gray-300 p-2 w-1/2 ml-2"
+                    className="border border-gray-300 p-2 w-full md:w-1/2 md:ml-2 mt-3 mb-2"
                     placeholder="CVV"
                     value={cvc}
                     onChange={(e) => setCvc(e.target.value)}
@@ -320,6 +394,7 @@ const Index = () => {
                   />
                 </div>
                 <hr className="mb-4" />
+                {/* Agreement section */}
                 <div className="flex items-center">
                   <input type="checkbox" className="form-checkbox mr-2" />
                   <span>
@@ -336,17 +411,19 @@ const Index = () => {
                       href="https://www.vodafone.com.tr/lead/on-muhasebe-ve-e-donusum-basvuru-formu"
                       target="_blank"
                     >
-                      Ön Bilgilendirme Forumunu
+                      Ön Bilgilendirme Formunu
                     </a>{' '}
                     okudum, onaylıyorum
                   </span>
                 </div>
                 <button
-                  className="bg-red-600 text-white justify-center py-2 px-4 rounded mt-4"
+                  className="bg-red-600 text-white justify-center py-2 px-4 rounded mt-4  w-full disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
                   onClick={handleSubmit}
+                  disabled={!cardNumber || !expiry || !cvc}
                 >
-                  Paketi Satın Al
+                  {packages[selectedPackage].price} ödeme yap
                 </button>
+                {/* Loading overlay */}
                 {loading && (
                   <div className="bg-black bg-opacity-50 fixed inset-0 flex items-center justify-center z-50">
                     <div className="bg-white shadow-xl p-8 rounded-lg w-[450px]">
@@ -362,18 +439,19 @@ const Index = () => {
                     </div>
                   </div>
                 )}
+                {/* Payment success message */}
                 {paymentSuccess && (
                   <p className="font-medium text-green-600 text-center text-[15px] mt-6 mb-6">
                     Ödemeniz başarıyla alındı!
                   </p>
                 )}
-
-                {step === 4 && (
-                  <p className="font-medium underline text-red-600 text-center text-[15px] mt-6 mb-6">
-                    Bekleyin Ödemenizi Alıyoruz...{' '}
-                  </p>
-                )}
               </div>
+            )}
+
+            {step === 4 && (
+              <p className="font-medium underline text-red-600 text-center text-[15px] mt-6 mb-6">
+                Bekleyin Ödemenizi Alıyoruz...{' '}
+              </p>
             )}
           </div>
         </div>
