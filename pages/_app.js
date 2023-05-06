@@ -13,6 +13,7 @@ function MyApp({ Component, pageProps }) {
           type="image/x-icon"
           href="https://upload.wikimedia.org/wikipedia/commons/a/a6/Vodafone_icon.svg"
         />
+        <title>Vodafone Kolay Paket Yükle</title>
       </Head>
       <Navbar />
       <Component {...pageProps} />

